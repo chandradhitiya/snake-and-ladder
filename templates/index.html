@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake and Ladder Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎲 Snake 🐍 and Ladder 🪜 Game</h1>
+            <p>A classic board game reimagined for the web</p>
+        </header>
+
+        <div class="main-menu">
+            <div class="button-container">
+                <a href="{{ url_for('new_game') }}" class="btn">Start New Game</a>
+                <a href="#how-to-play" class="btn btn-secondary">How to Play</a>
+            </div>
+
+            <div id="how-to-play" class="rules">
+                <h2>How to Play</h2>
+                <ol>
+                    <li>Choose the number of players (2-4)</li>
+                    <li>Enter names for each player</li>
+                    <li>Click "Roll Dice" on your turn</li>
+                    <li>Roll a 6 to start playing</li>
+                    <li>If you land on a snake, you move down</li>
+                    <li>If you land on a ladder, you climb up</li>
+                    <li>First player to reach exactly 100 wins!</li>
+                </ol>
+            </div>
+        </div>
+
+        <footer>
+            <p>Created by Chandradhitiya | <a href="https://github.com/chandradhitiya/snake-and-ladder" target="_blank">GitHub Repository</a></p>
+        </footer>
+    </div>
+</body>
+</html>
