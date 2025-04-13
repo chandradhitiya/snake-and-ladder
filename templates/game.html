@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Game - Snake and Ladder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container game-container">
+        <header>
+            <h1>🎲 Snake and Ladder Game</h1>
+        </header>
+
+        <div class="game-content">
+            <div class="game-board">
+                {% for row in board_data %}
+                <div class="board-row">
+                    {% for cell in row %}
+                    <div class="board-cell {% if cell.has_snake %}snake{% elif cell.has_ladder %}ladder{% endif %}">
+                        <div class="cell-number">{{ cell.number }}</div>
+                        {% if cell.has_snake %}
+                        <div class="snake-indicator" title="Snake to {{ cell.snake_to }}">🐍</div>
+                        {% endif %}
+                        {% if cell.has_ladder %}
+                        <div class="ladder-indicator" title="Ladder to {{ cell.ladder_to }}">🪜</div>
+                        {% endif %}
+                        {% if cell.players %}
+                        <div class="player-tokens">
+                            {% for player in cell.players %}
+                            <div class="player-token" style="background-color: {{ ['#FF5733', '#33FF57', '#3357FF', '#F3FF33'][loop.index0 % 4] }}">
+                                {{ player[0] }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="game-controls">
+                <div class="player-info">
+                    <h2>Players</h2>
+                    <ul class="player-list">
+                        {% for player, position in players.items() %}
+                        <li {% if player == current_player %}class="active-player"{% endif %}>
+                            <span class="player-name">{{ player }}</span>
+                            <span class="player-position">Position: {{ position if position > 0 else 'Not started' }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="game-message">
+                    {% if winner %}
+                    <div class="winner-message">
+                        <h3>🎉 {{ winner }} won the game! 🎉</h3>
+                        <a href="{{ url_for('new_game') }}" class="btn">New Game</a>
+                    </div>
+                    {% else %}
+                    <h3>{{ current_player }}'s Turn</h3>
+                    <p id="message">{{ message }}</p>
+                    <div class="dice-container">
+                        {% if last_roll %}
+                        <div class="dice">{{ last_roll }}</div>
+                        {% endif %}
+                    </div>
+                    <form action="{{ url_for('roll_dice') }}" method="post" id="roll-form">
+                        <button type="submit" class="btn dice-button">Roll Dice</button>
+                    </form>
+                    {% endif %}
+                </div>
+
+                <div class="game-legend">
+                    <h3>Legend</h3>
+                    <div><span class="legend-icon">🐍</span> Snake - Move down</div>
+                    <div><span class="legend-icon">🪜</span> Ladder - Move up</div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="footer-links">
+                <a href="{{ url_for('index') }}" class="btn btn-secondary">Menu</a>
+                <a href="{{ url_for('new_game') }}" class="btn btn-secondary">New Game</a>
+            </div>
+            <p>Created by Chandradhitiya | <a href="https://github.com/chandradhitiya/snake-and-ladder" target="_blank">GitHub Repository</a></p>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('roll-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            fetch('{{ url_for("roll_dice") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
